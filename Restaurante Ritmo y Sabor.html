@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritmo y Sabor - Menú Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-amber-100">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-gradient-to-tr from-amber-500 to-red-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-amber-500/20">
+                    <i data-lucide="utensils-crossed" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-slate-900 leading-none">
+                        Ritmo <span class="text-amber-600">&</span> Sabor
+                    </h1>
+                    <p class="text-xs font-medium text-amber-700 mt-0.5">Menú Criollo Digital</p>
+                </div>
+            </div>
+
+            <button onclick="toggleWeeklyModal()" class="flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold px-3.5 py-2 rounded-xl text-xs sm:text-sm transition">
+                <i data-lucide="calendar-days" class="w-4 h-4 text-amber-700"></i>
+                <span>Ver Semanario</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-1 w-full space-y-8">
+
+        <!-- Banner Principal: Entrada del Día -->
+        <section class="bg-gradient-to-r from-red-600 via-amber-600 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+            <div class="relative z-10 max-w-2xl space-y-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span id="day-tag" class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        Cargando día...
+                    </span>
+                    <span class="bg-amber-300 text-amber-950 text-xs font-black px-2.5 py-1 rounded-full uppercase">
+                        Menú Completo S/ 10.00
+                    </span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold leading-tight">
+                    Entradas Disponibles para Hoy
+                </h2>
+                
+                <!-- Entradas de hoy -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="bg-white/15 border border-white/20 backdrop-blur-md rounded-2xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-400/30 rounded-xl flex items-center justify-center text-amber-100 shrink-0">
+                            <i data-lucide="soup" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-amber-200 font-bold uppercase tracking-wider block">Entrada Fija Diaria</span>
+                            <span class="text-base font-bold text-white">Sopa del Día</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/25 border border-white/30 backdrop-blur-md rounded-2xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white text-amber-700 rounded-xl flex items-center justify-center shrink-0">
+                            <i data-lucide="utensils" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-amber-100 font-bold uppercase tracking-wider block">Entrada Especial Hoy</span>
+                            <span id="today-special-starter" class="text-base font-bold text-white">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros de Categorías -->
+        <nav class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
+            <button onclick="filterCategory('todos')" class="cat-btn active flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-amber-500 text-white shadow-md shadow-amber-500/20" data-cat="todos">
+                <i data-lucide="grid" class="w-4 h-4"></i> Todos
+            </button>
+            <button onclick="filterCategory('fondos')" class="cat-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-white text-slate-600 hover:bg-amber-50 shadow-xs border border-slate-200/80" data-cat="fondos">
+                <i data-lucide="utensils" class="w-4 h-4"></i> Platos Principales (S/ 10)
+            </button>
+            <button onclick="filterCategory('bebidas')" class="cat-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-white text-slate-600 hover:bg-amber-50 shadow-xs border border-slate-200/80" data-cat="bebidas">
+                <i data-lucide="cup-soda" class="w-4 h-4"></i> Bebidas
+            </button>
+            <button onclick="filterCategory('cena')" class="cat-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-white text-slate-600 hover:bg-amber-50 shadow-xs border border-slate-200/80" data-cat="cena">
+                <i data-lucide="moon" class="w-4 h-4"></i> Menú Cena
+            </button>
+        </nav>
+
+        <!-- Catálogo de Platos de Fondo -->
+        <section id="mains-section" class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i>
+                        Platos de Fondo
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Todos los segundos incluyen arroz, zarza criolla y entrada a elección (Sopa o Especial)</p>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-3 py-1.5 rounded-xl border border-emerald-200">
+                    S/ 10.00 c/u
+                </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="mains-container">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Bebidas -->
+        <section id="drinks-section" class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="cup-soda" class="w-5 h-5 text-amber-500"></i>
+                        Bebidas Heladitas
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Para acompañar tu almuerzo</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="drinks-container">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Sección de Cena (Próximamente) -->
+        <section id="dinner-section" class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 text-center text-white relative overflow-hidden border border-slate-800 shadow-lg">
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-indigo-500/10 rounded-full blur-xl"></div>
+            <div class="max-w-md mx-auto space-y-4 relative z-10">
+                <div class="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/30">
+                    <i data-lucide="moon" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-white">Carta de Cenas</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    ¡Próximamente! Estamos preparando una selección especial de platos para tus noches. Esta sección se actualizará muy pronto.
+                </p>
+                <div class="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-semibold px-4 py-2 rounded-xl text-xs">
+                    <i data-lucide="clock" class="w-4 h-4"></i> En actualización constante
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Programación Semanal de Entradas -->
+    <div id="weekly-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 border border-slate-100" id="weekly-dialog">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-amber-50/50">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-amber-500 text-white rounded-xl flex items-center justify-center">
+                        <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-lg leading-tight">Programación de Entradas</h3>
+                        <p class="text-xs text-slate-500">Sopa disponible todos los días</p>
+                    </div>
+                </div>
+                <button onclick="toggleWeeklyModal()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- List of Days -->
+            <div class="p-5 space-y-2.5 max-h-[65vh] overflow-y-auto" id="weekly-list">
+                <!-- Se genera dinámicamente -->
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
+                <button onclick="toggleWeeklyModal()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl hover:bg-slate-800 transition">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-slate-500 text-xs">
+        <div class="max-w-5xl mx-auto px-4 space-y-1">
+            <p class="font-bold text-slate-800">Restaurante Ritmo y Sabor</p>
+            <p>¡Te esperamos en nuestro local para disfrutar del mejor sabor criollo!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Platos de Fondo
+        const mains = [
+            { name: 'Pato Guisado', desc: 'Con sazón criolla tradicional' },
+            { name: 'Cordero al Horno', desc: 'Tierna carne horneada en su jugo' },
+            { name: 'Locrito con Pollo Frito', desc: 'Locro tradicional acompañado de presas crujientes' },
+            { name: 'Tallarines Verdes', desc: 'Acompañados de su corte o presa' },
+            { name: 'Estofado de Pollo', desc: 'Guiso clásico con zanahoria y arvejas' },
+            { name: 'Cabrito', desc: 'Guisado al estilo norteño criollo' },
+            { name: 'Gallina Guisada', desc: 'Sabor casero y abundante' },
+            { name: 'Pollo a la Olla', desc: 'Jugoso pollo marinado y dorado' },
+            { name: 'Carne Guisada', desc: 'Carne de res suave en salsa criolla' },
+            { name: 'Pollada', desc: 'Pollo sazonado a la plancha/frito con ají especial' }
+        ];
+
+        // Bebidas
+        const drinks = [
+            { name: 'Inca Kola 1.5 L', volume: '1.5 Litros - Heladita' },
+            { name: 'Coca-Cola 1.5 L', volume: '1.5 Litros - Heladita' }
+        ];
+
+        // Programación de entradas (Lunes a Domingo)
+        // La sopa siempre es fija todos los días.
+        const weeklyStarters = [
+            { day: 'Domingo', special: 'Ceviche' },
+            { day: 'Lunes', special: 'Ceviche' },
+            { day: 'Martes', special: 'Papa a la Huancaína' },
+            { day: 'Miércoles', special: 'Ceviche' },
+            { day: 'Jueves', special: 'Papa a la Huancaína' },
+            { day: 'Viernes', special: 'Ceviche' },
+            { day: 'Sábado', special: 'Papa a la Huancaína' }
+        ];
+
+        const daysOfWeekNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+        window.onload = function() {
+            setTodayStarter();
+            renderMains();
+            renderDrinks();
+            renderWeeklySchedule();
+            lucide.createIcons();
+        };
+
+        function setTodayStarter() {
+            const todayIndex = new Date().getDay();
+            const todayData = weeklyStarters[todayIndex];
+            
+            document.getElementById('today-special-starter').innerText = todayData.special;
+            document.getElementById('day-tag').innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5"></i> Hoy es ${todayData.day}`;
+        }
+
+        function renderMains() {
+            const container = document.getElementById('mains-container');
+            container.innerHTML = mains.map(item => `
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between hover:border-amber-300 transition">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-start gap-2">
+                            <h4 class="font-bold text-slate-900 text-base leading-snug">${item.name}</h4>
+                            <span class="text-amber-700 font-extrabold text-sm shrink-0">S/ 10.00</span>
+                        </div>
+                        <p class="text-xs text-slate-500">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDrinks() {
+            const container = document.getElementById('drinks-container');
+            container.innerHTML = drinks.map(item => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center justify-between shadow-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center shrink-0">
+                            <i data-lucide="cup-soda" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                            <span class="text-xs text-slate-500">${item.volume}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderWeeklySchedule() {
+            const container = document.getElementById('weekly-list');
+            const currentDayIndex = new Date().getDay();
+
+            container.innerHTML = weeklyStarters.map((item, index) => {
+                const isToday = index === currentDayIndex;
+                return `
+                    <div class="p-3.5 rounded-2xl border ${isToday ? 'bg-amber-50 border-amber-300 ring-2 ring-amber-500/20' : 'bg-slate-50 border-slate-200/70'} flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg ${isToday ? 'bg-amber-500 text-white' : 'bg-white text-slate-500 border border-slate-200'} flex items-center justify-center font-bold text-xs">
+                                ${item.day.substring(0, 3)}
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 text-sm">${item.day} ${isToday ? '<span class="text-[10px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-md ml-1">HOY</span>' : ''}</h5>
+                                <p class="text-xs text-slate-600">
+                                    Sopa + <span class="font-semibold text-amber-700">${item.special}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleWeeklyModal() {
+            const modal = document.getElementById('weekly-modal');
+            const dialog = document.getElementById('weekly-dialog');
+
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    dialog.classList.remove('scale-95');
+                    dialog.classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                dialog.classList.remove('scale-100');
+                dialog.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function filterCategory(category) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.className = "cat-btn active flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-amber-500 text-white shadow-md shadow-amber-500/20";
+                } else {
+                    btn.className = "cat-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm transition shrink-0 bg-white text-slate-600 hover:bg-amber-50 shadow-xs border border-slate-200/80";
+                }
+            });
+
+            const mainsSec = document.getElementById('mains-section');
+            const drinksSec = document.getElementById('drinks-section');
+            const dinnerSec = document.getElementById('dinner-section');
+
+            if (category === 'todos') {
+                mainsSec.style.display = 'block';
+                drinksSec.style.display = 'block';
+                dinnerSec.style.display = 'block';
+            } else if (category === 'fondos') {
+                mainsSec.style.display = 'block';
+                drinksSec.style.display = 'none';
+                dinnerSec.style.display = 'none';
+            } else if (category === 'bebidas') {
+                mainsSec.style.display = 'none';
+                drinksSec.style.display = 'block';
+                dinnerSec.style.display = 'none';
+            } else if (category === 'cena') {
+                mainsSec.style.display = 'none';
+                drinksSec.style.display = 'none';
+                dinnerSec.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
